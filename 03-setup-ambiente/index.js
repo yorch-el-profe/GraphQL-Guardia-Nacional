@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { graphqlHTTP } = require('express-graphql');
 const express = require('express');
 const app = express();
@@ -6,7 +8,7 @@ const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolver');
 
 mongoose
-    .connect('mongodb+srv://root:root@bedu.3dpevnp.mongodb.net/graphql?retryWrites=true&w=majority')
+    .connect(process.env.MONGO_URI)
     .then(() => console.log('Conectado a la base de datos'))
     .catch(() => console.error('No se puedo establecer conexión con la BD'));
 

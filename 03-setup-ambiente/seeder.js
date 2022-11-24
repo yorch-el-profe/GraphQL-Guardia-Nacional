@@ -1,8 +1,10 @@
+require('dotenv').config();
+
 const Entity = require('./database/entity');
 const JSON = require('./mx.json');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb+srv://root:root@bedu.3dpevnp.mongodb.net/graphql?retryWrites=true&w=majority');
+mongoose.connect(process.env.MONGO_URI);
 
 Entity.insertMany(
     JSON.map(({ city, lat, lng, population }) => ({
