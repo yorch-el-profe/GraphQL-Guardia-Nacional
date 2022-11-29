@@ -12,6 +12,8 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
+const jwt = require('jsonwebtoken');
+const { GraphQLError } = require('graphql');
 
 const server = new ApolloServer({
     typeDefs,
@@ -19,7 +21,18 @@ const server = new ApolloServer({
 });
 
 startStandaloneServer(server, {
-    listen: { port: 8080 }
+    listen: { port: 8080 },
+    context: ({ req }) => {
+        if (req.headers.authorization) {
+            try {
+                const user = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+
+                return { user };
+            } catch (e) {
+                throw new GraphQLError("Token inválido o expirado");
+            }
+        }
+    }
 }).then(function () {
     console.log('> Escuchando puerto 8080 🚀');
 });

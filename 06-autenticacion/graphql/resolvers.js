@@ -10,10 +10,18 @@ module.exports = {
         getCourses() {
             return Course.find({}, { students: 0 }).exec();
         },
-        getStudents() {
+        getStudents(parent, args, context) {
+            if (!context.user) {
+                throw new GraphQLError("No tienes acceso a este recurso");
+            }
+            
             return Student.find().exec();
         },
-        async getStudentsByCourse(_, { id }) {
+        async getStudentsByCourse(_, { id }, context) {
+            if (!context.user) {
+                throw new GraphQLError("No tienes acceso a este recurso");
+            }
+
             const course = await Course
                 .findById(id).populate("students").exec();
 
