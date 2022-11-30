@@ -5,23 +5,35 @@ const { GraphQLError } = require('graphql');
 const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 
+function validateContext(resolver) {
+    return function (parent, args, context) {
+        if (!context.user) {
+            throw new GraphQLError("No tienes acceso a este recurso");
+        }
+
+        return resolver(parent, args, context);
+    }
+}
+
+function validateRole(resolver) {
+    return validateContext(function (parent, args, context) {
+        if (context.user.role !== "admin") {
+            throw new GraphQLError("Solo usuarios administradores pueden ejecutar esta mutación");
+        }
+
+        return resolver(parent, args, context);
+    });
+}
+
 module.exports = {
     Query: {
         getCourses() {
             return Course.find({}, { students: 0 }).exec();
         },
-        getStudents(parent, args, context) {
-            if (!context.user) {
-                throw new GraphQLError("No tienes acceso a este recurso");
-            }
-            
+        getStudents: validateContext(function () {
             return Student.find().exec();
-        },
-        async getStudentsByCourse(_, { id }, context) {
-            if (!context.user) {
-                throw new GraphQLError("No tienes acceso a este recurso");
-            }
-
+        }),
+        getStudentsByCourse: validateContext(async function (_, { id }) {
             const course = await Course
                 .findById(id).populate("students").exec();
 
@@ -30,28 +42,28 @@ module.exports = {
             }
 
             return course.students;
-        }
+        })
     },
     Mutation: {
-        createStudent(_, { input }) {
+        createStudent: validateContext(function (_, { input }) {
             return new Student(input).save();
-        },
+        }),
 
-        createCourse(_, { name }) {
+        createCourse: validateContext(function (_, { name }) {
             return new Course({ name }).save();
-        },
-        async addStudent(_, { input }) {
+        }),
+        addStudent: validateContext(async function (_, { input }) {
             await Course.findByIdAndUpdate(input.courseId, { 
                 $push: { students: input.studentId }
             });
             return true;
-        },
-        createUser(_, { input }) {
+        }),
+        createUser: validateRole(function (_, { input }) {
             return new User({
                 ...input,
                 password: md5(input.password)
             }).save();
-        },
+        }),
         async authenticate(_, { input }) {
             const user = await User
                 .findOne({ email: input.email }).exec();
