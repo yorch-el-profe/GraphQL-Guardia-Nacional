@@ -8,12 +8,7 @@ const jwt = require('jsonwebtoken');
 function validateContext(resolver) {
     return function (parent, args, context) {
         if (!context.user) {
-            throw new GraphQLError("No tienes acceso a este recurso", {
-                extensions: {
-                    code: "NO_AUTORIZADO",
-                    data: {}
-                }
-            });
+            throw new GraphQLError("No tienes acceso a este recurso");
         }
 
         return resolver(parent, args, context);

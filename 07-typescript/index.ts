@@ -7,33 +7,26 @@ connect(process.env.MONGO_URI)
         console.log('> Conectado con MongoDB ✔')
     });
 
-// Configuración de Apollo
-const { ApolloServer } = require('@apollo/server');
-const { startStandaloneServer } = require('@apollo/server/standalone');
+// Configuración de Apollo}
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone'
+import { verify } from 'jsonwebtoken';
+import { GraphQLError } from 'graphql';
+
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
-const jwt = require('jsonwebtoken');
-const { GraphQLError } = require('graphql');
 
 const server = new ApolloServer({
     typeDefs,
-    resolvers,
-    formatError(formatedError) {
-        const { code ,data } = formatedError.extensions;
-        return {
-            code,
-            data,
-            error: true
-        }
-    }
+    resolvers
 });
 
 startStandaloneServer(server, {
     listen: { port: 8080 },
-    context: ({ req }) => {
+    context: ({ req }: any) => {
         if (req.headers.authorization) {
             try {
-                const user = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+                const user = verify(req.headers.authorization, process.env.JWT_SECRET);
 
                 return { user };
             } catch (e) {
