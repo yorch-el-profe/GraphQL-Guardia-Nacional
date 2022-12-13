@@ -24,12 +24,13 @@ module.exports = `
   }
 
   type Query {
-    getPostsByUserId(userId: ID!): [Post!]!
+    getMyPosts: [Post!]!
     getUser: User!
   }
 
   type Mutation {
     createUser(input: NewUser!): User!
     authenticate(input: Credentials!): String!
+    createPost(content: String!): Post!
   }
 `;
