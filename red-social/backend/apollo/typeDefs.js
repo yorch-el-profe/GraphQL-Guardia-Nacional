@@ -18,11 +18,18 @@ module.exports = `
     password: String!
   }
 
+  input Credentials {
+    email: String!
+    password: String!
+  }
+
   type Query {
     getPostsByUserId(userId: ID!): [Post!]!
+    getUser: User!
   }
 
   type Mutation {
-    createUser(input: NewUser): User!
+    createUser(input: NewUser!): User!
+    authenticate(input: Credentials!): String!
   }
 `;
