@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg fixed-top bg-dark navbar-dark">
@@ -22,21 +24,21 @@ function Navbar() {
         >
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" to="/">
                 Inicio
-              </a>
+              </Link>
             </li>
           </ul>
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" to="/registro">
                 Registrarse
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" href="/sesion">
                 Iniciar Sesión
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
               <a
