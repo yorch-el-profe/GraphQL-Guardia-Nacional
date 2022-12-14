@@ -3,7 +3,7 @@ const { models } = require("../../database");
 const { compare } = require("../../util/hash");
 const { sign } = require("../../util/security");
 
-async function authenticate(_, { input }) {
+exports.authenticate = async function (_, { input }) {
   const { email, password } = input;
 
   const user = await models.User.findOne({ email }).exec();
@@ -17,8 +17,4 @@ async function authenticate(_, { input }) {
   }
 
   return sign({ _id: user._id });
-}
-
-module.exports = {
-  authenticate,
 };

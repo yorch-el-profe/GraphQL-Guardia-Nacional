@@ -26,6 +26,7 @@ module.exports = `
   type Query {
     getMyPosts: [Post!]!
     getUser: User!
+    getPosts: [Post!]!
   }
 
   type Mutation {

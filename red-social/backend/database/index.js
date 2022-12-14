@@ -3,6 +3,8 @@ const logger = require("../util/logger");
 const UserSchema = require("./schemas/user");
 const PostSchema = require("./schemas/post");
 
+mongoose.set("strictQuery", true);
+
 function connect() {
   return mongoose
     .connect(process.env.MONGO_URI)
