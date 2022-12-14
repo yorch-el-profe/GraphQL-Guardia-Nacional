@@ -1,4 +1,17 @@
+import { execute } from "graphql";
+
 function Login() {
+  function loginHandler(data) {
+    execute({
+      variables: {},
+    });
+  }
+
+  /*if (data) {
+    localStorage.setItem("token", token);
+    // redireccion hacia el inicio
+  }*/
+
   return (
     <form noValidate>
       <h2 className="mb-3">Iniciar sesión</h2>

@@ -1,4 +1,14 @@
 import { useForm } from "react-hook-form";
+import { gql, useMutation } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
+
+const CREATE_USER = gql`
+  mutation ($input: NewUser!) {
+    createUser(input: $input) {
+      _id
+    }
+  }
+`;
 
 function Register() {
   const {
@@ -7,8 +17,36 @@ function Register() {
     formState: { errors },
   } = useForm();
 
-  function registerHandler(data) {
-    console.log(data);
+  const [execute, { data, loading, error }] = useMutation(CREATE_USER);
+
+  const navigate = useNavigate();
+
+  function registerHandler(input) {
+    execute({
+      variables: {
+        input,
+      },
+    });
+  }
+
+  if (loading) {
+    return (
+      <div className="text-center">
+        <h1>Cargando...</h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center">
+        <h1>Error...</h1>
+      </div>
+    );
+  }
+
+  if (data) {
+    navigate("/");
   }
 
   return (
